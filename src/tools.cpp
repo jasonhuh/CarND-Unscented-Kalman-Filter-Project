@@ -27,11 +27,9 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
     }
     rmse = rmse / estimations.size();
     rmse = rmse.array().sqrt();
-
     return rmse;
 }
 
 double Tools::NormalizeAngle(double angle) {
-    //double val = atan2(sin(angle), cos(angle));
     return fmod (angle, 3.142);
 }
