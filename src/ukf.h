@@ -10,8 +10,14 @@
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
+using std::pair;
 
 class UKF {
+private:
+    MatrixXd GenerateAugmentedSigmaPoints(const VectorXd& x, const MatrixXd& P);
+    MatrixXd PredictSigmaPoints(const MatrixXd& Xsig_aug);
+    pair<VectorXd, MatrixXd> PredictMeanAndCovariance(const MatrixXd& Xsig_pred);
+    double UpdateCommon(const int n_z, const MatrixXd R, const VectorXd& z, const MatrixXd& Zsig);
 public:
 
   ///* initially set to false, set to true in first call of ProcessMeasurement
@@ -91,26 +97,26 @@ public:
    * ProcessMeasurement
    * @param meas_package The latest measurement data of either radar or laser
    */
-  void ProcessMeasurement(MeasurementPackage meas_package);
+  void ProcessMeasurement(const MeasurementPackage& meas_package);
 
   /**
    * Prediction Predicts sigma points, the state, and the state covariance
    * matrix
    * @param delta_t Time between k and k+1 in s
    */
-  void Prediction(double delta_t);
+  void Predict(double delta_t);
 
   /**
    * Updates the state and the state covariance matrix using a laser measurement
    * @param meas_package The measurement at k+1
    */
-  void UpdateLidar(MeasurementPackage meas_package);
+  void UpdateLidar(const MeasurementPackage& meas_package);
 
   /**
    * Updates the state and the state covariance matrix using a radar measurement
    * @param meas_package The measurement at k+1
    */
-  void UpdateRadar(MeasurementPackage meas_package);
+  void UpdateRadar(const MeasurementPackage& meas_package);
 };
 
 #endif /* UKF_H */
