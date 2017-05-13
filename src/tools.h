@@ -5,15 +5,6 @@
 
 class Tools {
 public:
-  /**
-  * Constructor.
-  */
-  Tools();
-
-  /**
-  * Destructor.
-  */
-  virtual ~Tools();
 
   /**
   * A helper method to calculate RMSE.

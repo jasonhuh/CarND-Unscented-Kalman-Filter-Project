@@ -3,8 +3,7 @@
 
 #include "Eigen/Dense"
 
-class GroundTruthPackage {
-public:
+struct GroundTruthPackage {
   long long timestamp_;
 
   enum SensorType{
@@ -13,7 +12,6 @@ public:
   } sensor_type_;
 
   Eigen::VectorXd gt_values_;
-
 };
 
 #endif /* GROUND_TRUTH_PACKAGE_H_ */

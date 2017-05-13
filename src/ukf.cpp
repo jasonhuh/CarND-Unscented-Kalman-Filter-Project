@@ -52,6 +52,29 @@ UKF::UKF() {
 
   Hint: one or more values initialized above might be wildly off...
   */
+    // Set state dimension
+    n_x_ = 5;
+
+    // Set augmented dimension
+    n_aug_ = 7;
+
+    // Define spreading parameter
+    lambda_ = 3 - n_x_;
+
+    // Init vector for weights
+    weights_ = VectorXd(2 * n_aug_ + 1);
+
+    // Init matrix with predicted sigma points as columns
+    Xsig_pred_ = MatrixXd(n_x_, 2 * n_aug_ + 1);
+
+    // Set NIS for radar
+    NIS_radar_ = 0.0;
+
+    // Set NIS for laser
+    NIS_laser_ = 0.0;
+
+    // Set previous timestamp
+    previous_timestamp_;
 }
 
 UKF::~UKF() {}
@@ -67,6 +90,61 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
   Complete this function! Make sure you switch between lidar and radar
   measurements.
   */
+
+    /*****************************************************************************
+     *  Initialization
+     ****************************************************************************/
+    if (!is_initialized_) {
+        if (meas_package.sensor_type_ == MeasurementPackage::RADAR) {
+
+        }
+        else if (meas_package.sensor_type_ == MeasurementPackage::LASER) {
+
+        }
+        previous_timestamp_ = meas_package.timestamp_;
+        x_.fill(0.0);
+
+        //set weights
+        weights_(0) = lambda_/(lambda_ + n_aug_);
+        for (int i = 1; i < 2 * n_aug_ + 1; ++i) {
+            weights_(i) = 0.5/(lambda_ + n_aug_);
+        }
+
+        Xsig_pred_.fill(0.0);
+
+        // done initializing, no need to predict or update
+        is_initialized_ = true;
+        return;
+    }
+
+    /*****************************************************************************
+     *  Prediction
+     ****************************************************************************/
+
+    //compute the time elapsed between the current and previous measurements
+    auto dt = (meas_package.timestamp_ - previous_timestamp_) / 1000000.0;	//dt - expressed in seconds
+    previous_timestamp_ = meas_package.timestamp_;
+
+    Prediction(dt);
+
+    /*****************************************************************************
+     *  Update
+     ****************************************************************************/
+
+    if (meas_package.sensor_type_ == MeasurementPackage::RADAR) { // Radar updates
+        if(fabs(meas_package.raw_measurements_(0)) > 0.001) {
+            UpdateRadar(meas_package);
+        } else {
+            cout << "Too small. Skipping Radar update.\n";
+        }
+    } else { // Laser updates
+        if (x_[0] > 0.0 || x_[1] > 0.0) {
+            UpdateLidar(meas_package);
+        } else {
+            x_[0] = x_[1] = 0.000001;
+            cout << "Too small. Skipping Radar update.\n";
+        }
+    }
 }
 
 /**
