@@ -14,8 +14,9 @@ using std::pair;
 
 class UKF {
 private:
+    void ConfigureInitialMeasurement(const MeasurementPackage& meas_package);
     MatrixXd GenerateAugmentedSigmaPoints(const VectorXd& x, const MatrixXd& P);
-    MatrixXd PredictSigmaPoints(const MatrixXd& Xsig_aug);
+    MatrixXd PredictSigmaPoints(const MatrixXd& Xsig_aug, const double delta_t);
     pair<VectorXd, MatrixXd> PredictMeanAndCovariance(const MatrixXd& Xsig_pred);
     double UpdateCommon(const int n_z, const MatrixXd R, const VectorXd& z, const MatrixXd& Zsig);
 public:

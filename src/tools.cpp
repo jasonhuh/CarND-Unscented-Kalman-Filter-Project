@@ -22,11 +22,16 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 
     //accumulate squared residuals
     for(size_t i = 0; i < estimations.size(); ++i){
-        VectorXd c = (estimations[i] - ground_truth[i]).array().square();
-        rmse = rmse + c;
+        VectorXd residual = (estimations[i] - ground_truth[i]).array().square();
+        rmse += residual;
     }
     rmse = rmse / estimations.size();
     rmse = rmse.array().sqrt();
 
     return rmse;
+}
+
+double Tools::NormalizeAngle(double angle) {
+    //double val = atan2(sin(angle), cos(angle));
+    return fmod (angle, 3.142);
 }

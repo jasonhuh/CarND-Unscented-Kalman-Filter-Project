@@ -9,8 +9,12 @@ public:
   /**
   * A helper method to calculate RMSE.
   */
-  Eigen::VectorXd CalculateRMSE(const std::vector<Eigen::VectorXd> &estimations, const std::vector<Eigen::VectorXd> &ground_truth);
+  static Eigen::VectorXd CalculateRMSE(const std::vector<Eigen::VectorXd> &estimations, const std::vector<Eigen::VectorXd> &ground_truth);
 
+    /**
+    * A helper method to normalize angle
+    */
+    static double NormalizeAngle(double angle);
 };
 
 #endif /* TOOLS_H_ */
